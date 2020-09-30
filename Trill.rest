@@ -1,0 +1,46 @@
+@url = http://localhost:5000
+@storyId = ccdbf64d-999c-49df-bdc0-0f973365f754
+
+###
+GET {{url}}
+
+
+###
+GET {{url}}/api/stories
+
+###
+GET {{url}}/api/stories/{{storyId}}
+
+###
+POST {{url}}/api/stories
+Content-Type: application/json
+
+{
+  "title": "Story 1",
+  "text": "Lorem ipsum",
+  "author": "user1",
+  "tags": ["tag1", "tag2"]
+}
+
+
+###
+# @name sign_in
+POST {{url}}/sign-in
+Content-Type: application/json
+
+{
+}
+
+@accessToken = {{sign_in.response.body.$.accessToken}}
+
+###
+GET {{url}}/me
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/secret
+Authorization: Bearer {{accessToken}}
+
+###
+GET http://localhost:5010/secrets
+Authorization: Bearer {{accessToken}}
