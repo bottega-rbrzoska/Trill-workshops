@@ -22,6 +22,7 @@ namespace Trill.Api
                     logger
                         .Enrich.FromLogContext()
                         .WriteTo.Console();
+                    // .WriteTo.Seq("http://localhost:5341");
                 });
     }
 }

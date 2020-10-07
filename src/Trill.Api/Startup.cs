@@ -48,6 +48,11 @@ namespace Trill.Api
                     await context.Response.WriteAsync(name);
                 });
 
+                endpoints.MapGet("/error", async context =>
+                {
+                    throw new ArgumentException("Ooppsss");
+                });
+                
                 endpoints.MapGet("stories/{storyId:guid}", async context =>
                 {
                     var storyId = Guid.Parse(context.Request.RouteValues["storyId"].ToString());
