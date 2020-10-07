@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Trill.Api
 {
@@ -15,6 +16,12 @@ namespace Trill.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .UseSerilog((context, logger) =>
+                {
+                    logger
+                        .Enrich.FromLogContext()
+                        .WriteTo.Console();
                 });
     }
 }
