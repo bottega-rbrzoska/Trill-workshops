@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,9 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Trill.Api.Middlewares;
 using Trill.Api.Services;
 using Trill.Application;
+using Trill.Application.Commands;
+using Trill.Application.Services;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trill.Api
 {
@@ -89,21 +94,37 @@ namespace Trill.Api
                 endpoints.MapGet("stories/{storyId:guid}", async context =>
                 {
                     var storyId = Guid.Parse(context.Request.RouteValues["storyId"].ToString());
-                    if (storyId == Guid.Empty)
+                    var story = await context.RequestServices.GetRequiredService<IStoryService>().GetAsync(storyId);
+                    if (story is null)
                     {
                         context.Response.StatusCode = StatusCodes.Status404NotFound;
                         return;
                     }
 
+                    // var json = JsonSerializer.Serialize(story);
+                    var json = JsonConvert.SerializeObject(story);
                     context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync("{}");
+                    await context.Response.WriteAsync(json);
                 });
 
                 endpoints.MapPost("stories", async context =>
                 {
-                    var storyId = Guid.NewGuid();
-                    // Save story to DB
-                    context.Response.Headers.Add("Location", $"stories/{storyId}");
+                    var body = context.Request.Body;
+                    if (body is null)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                        return;
+                    }
+
+                    var json = await new StreamReader(body).ReadToEndAsync();
+                    var command = JsonConvert.DeserializeObject<SendStory>(json);
+                    // var command = JsonSerializer.Deserialize<SendStory>(json, new JsonSerializerOptions
+                    // {
+                    //     PropertyNameCaseInsensitive = true
+                    // });
+                    await context.RequestServices.GetRequiredService<IStoryService>().AddAsync(command);
+                    
+                    context.Response.Headers.Add("Location", $"stories/{command.Id}");
                     context.Response.StatusCode = StatusCodes.Status201Created;
                 });
             });

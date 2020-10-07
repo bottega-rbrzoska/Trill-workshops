@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Trill.Application.Commands
 {
+    // Immutable
     public class SendStory
     {
         public Guid Id { get; }

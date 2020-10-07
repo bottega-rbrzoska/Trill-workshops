@@ -8,6 +8,10 @@ GET {{url}}
 POST {{url}}/stories
 
 {
+  "title": "Story 1",
+  "text": "Lorem ipsum",
+  "author": "user1",
+  "tags": ["tag1", "tag2"]
 }
 
 ###
