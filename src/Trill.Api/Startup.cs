@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Trill.Api.Middlewares;
 using Trill.Api.Services;
 
 namespace Trill.Api
@@ -25,17 +26,47 @@ namespace Trill.Api
         {
             services.AddScoped<IMessenger, Messenger>();
             services.Configure<ApiOptions>(_configuration.GetSection("api"));
-            services.AddHostedService<NotificationsService>();
+            services.AddScoped<DummyMiddleware>();
+            services.AddScoped<ErrorHandlerMiddleware>();
+
+            // services.AddHostedService<NotificationsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // if (env.IsDevelopment())
+            // {
+            //     app.UseDeveloperExceptionPage();
+            // }
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
+            app.Use(async (ctx, next) =>
+            {
+                Console.WriteLine("I'm the first middleware");
+                await next();
+            });
+            
+            app.Use(async (ctx, next) =>
+            {
+                Console.WriteLine("I'm the second middleware");
+                await next();
+            });
+
+            app.UseMiddleware<DummyMiddleware>();
+            
+            app.Use(async (ctx, next) =>
+            {
+                if (ctx.Request.Query.TryGetValue("token", out var token) && token == "secret")
+                {
+                    await ctx.Response.WriteAsync("Secret");
+                    return;
+                }
+
+                await next();
+            });
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
