@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Trill.Api.Middlewares;
 using Trill.Api.Services;
+using Trill.Application;
 
 namespace Trill.Api
 {
@@ -28,6 +29,7 @@ namespace Trill.Api
             services.Configure<ApiOptions>(_configuration.GetSection("api"));
             services.AddScoped<DummyMiddleware>();
             services.AddScoped<ErrorHandlerMiddleware>();
+            services.AddApplication();
 
             // services.AddHostedService<NotificationsService>();
         }
