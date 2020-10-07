@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Trill.Application.Commands;
+using Trill.Application.DTO;
 
 namespace Trill.Application.Services
 {
