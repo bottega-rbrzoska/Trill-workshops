@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
+using Trill.Application.Commands;
 using Trill.Application.Services;
 using Trill.Core.Entities;
 using Trill.Core.Repositories;
@@ -15,15 +16,34 @@ namespace Trill.Tests.Unit.Services
         [Fact]
         public async Task get_story_details_should_succeed_given_valid_id()
         {
+            // Arrange
             var story = new Story(Guid.NewGuid(), "test", "lorem ipsum",
                 "test_user", new[] {"tag1"}, DateTime.UtcNow);
-            
             _storyRepository.GetAsync(story.Id).Returns(story);
 
+            // Act
             var dto = await _storyService.GetAsync(story.Id);
             
+            // Assert
             dto.ShouldNotBeNull();
-            await _storyRepository.Received().GetAsync(story.Id);
+            await _storyRepository.Received(1).GetAsync(story.Id);
+        }
+
+        [Fact]
+        public async Task add_should_succeed_given_valid_data()
+        {
+            // Arrange
+            var command = new SendStory(Guid.NewGuid(), "test", "Lorem ipsum", "user1", new[] {"tag1", "tag2"});
+
+            // Act
+            await _storyService.AddAsync(command);
+
+            // Assert
+            await _storyRepository.Received(1).AddAsync(Arg.Is<Story>(x =>
+                x.Id == command.Id &&
+                x.Title == command.Title &&
+                x.Text == command.Text &&
+                x.Author == command.Author));
         }
 
         #region Arrange

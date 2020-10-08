@@ -94,7 +94,7 @@ namespace Trill.Api
                     await context.Response.WriteAsync(name);
                 });
 
-                endpoints.MapGet("/error", async context =>
+                endpoints.MapGet("/error", context =>
                 {
                     throw new ArgumentException("Ooppsss");
                 });
