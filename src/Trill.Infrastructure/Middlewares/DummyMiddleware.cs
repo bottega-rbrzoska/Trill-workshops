@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Trill.Api.Middlewares
+namespace Trill.Infrastructure.Middlewares
 {
-    public class DummyMiddleware : IMiddleware
+    internal class DummyMiddleware : IMiddleware
     {
         private readonly ILogger<DummyMiddleware> _logger;
 

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using Trill.Api.Middlewares;
 using Trill.Api.Services;
 using Trill.Application;
 using Trill.Application.Commands;
@@ -33,8 +32,6 @@ namespace Trill.Api
         {
             services.AddScoped<IMessenger, Messenger>();
             services.Configure<ApiOptions>(_configuration.GetSection("api"));
-            services.AddScoped<DummyMiddleware>();
-            services.AddScoped<ErrorHandlerMiddleware>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(swagger => swagger.SwaggerDoc("v1", new OpenApiInfo
             {
@@ -55,7 +52,7 @@ namespace Trill.Api
             //     app.UseDeveloperExceptionPage();
             // }
 
-            app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseInfrastructure();
             app.UseSwagger();
             app.UseSwaggerUI(swagger => swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "Trill API"));
 
@@ -71,7 +68,6 @@ namespace Trill.Api
                 await next();
             });
 
-            app.UseMiddleware<DummyMiddleware>();
             
             app.Use(async (ctx, next) =>
             {
