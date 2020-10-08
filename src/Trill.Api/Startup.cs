@@ -34,6 +34,7 @@ namespace Trill.Api
             services.Configure<ApiOptions>(_configuration.GetSection("api"));
             services.AddScoped<DummyMiddleware>();
             services.AddScoped<ErrorHandlerMiddleware>();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddApplication();
 
             // services.AddHostedService<NotificationsService>();
@@ -78,6 +79,8 @@ namespace Trill.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+                
                 endpoints.MapGet("/", async context =>
                 {
                     var options = context.RequestServices.GetRequiredService<IOptions<ApiOptions>>();
