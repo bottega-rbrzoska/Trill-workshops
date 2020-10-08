@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Trill.Core.Repositories;
 using Trill.Infrastructure.Caching;
 using Trill.Infrastructure.Middlewares;
+using Trill.Infrastructure.Mongo;
 
 namespace Trill.Infrastructure
 {
@@ -15,6 +16,7 @@ namespace Trill.Infrastructure
             services.AddScoped<IStoryRepository, InMemoryStoryRepository>();
             services.AddScoped<DummyMiddleware>();
             services.AddScoped<ErrorHandlerMiddleware>();
+            services.AddMongo();
             
             return services;
         }
