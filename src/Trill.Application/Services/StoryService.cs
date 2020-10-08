@@ -2,47 +2,63 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Trill.Application.Commands;
 using Trill.Application.DTO;
 using Trill.Core.Entities;
+using Trill.Core.Repositories;
+using Trill.Core.ValueObjects;
 
 namespace Trill.Application.Services
 {
     public class StoryService : IStoryService
     {
-        // This is not thread safe (in the real world scenario use e.g. ConcurrentDictionary)
-        private static readonly ISet<StoryDetailsDto> Stories = new HashSet<StoryDetailsDto>();
+        private readonly IStoryRepository _storyRepository;
+        private readonly ILogger<StoryService> _logger;
 
-        public Task<StoryDetailsDto> GetAsync(Guid id) => Task.FromResult(Stories.SingleOrDefault(p => p.Id == id));
+        public StoryService(IStoryRepository storyRepository, ILogger<StoryService> logger)
+        {
+            _storyRepository = storyRepository;
+            _logger = logger;
+        }
 
-        public Task<IEnumerable<StoryDto>> BrowseAsync(string author = null)
-            => Task.FromResult(Stories.Where(x => author is null || x.Author == author)
-                .Select(x => new StoryDto
+        public async Task<StoryDetailsDto> GetAsync(Guid id)
+        {
+            var story = await _storyRepository.GetAsync(id);
+
+            return story is null
+                ? null
+                : new StoryDetailsDto
                 {
-                    Id = x.Id,
-                    Author = x.Author,
-                    Title = x.Title,
-                    Tags = x.Tags ?? Enumerable.Empty<string>(),
-                    CreatedAt = x.CreatedAt
-                }));
+                    Id = story.Id,
+                    Author = story.Author,
+                    Text = story.Text,
+                    Title = story.Title,
+                    Tags = story.Tags ?? Enumerable.Empty<string>(),
+                    CreatedAt = story.CreatedAt
+                };
+        }
+
+        public async Task<IEnumerable<StoryDto>> BrowseAsync(string author = null)
+        {
+            var stories = await _storyRepository.BrowseAsync(author);
+
+            return stories.Select(x => new StoryDto
+            {
+                Id = x.Id,
+                Author = x.Author,
+                Title = x.Title,
+                Tags = x.Tags ?? Enumerable.Empty<string>(),
+                CreatedAt = x.CreatedAt
+            });
+        }
 
         public async Task AddAsync(SendStory command)
         {
-            var story = await GetAsync(command.Id);
-            if (story is {})
-            {
-                throw new Exception($"Story with ID: '{command.Id}' already exists.");
-            }
-
-            Stories.Add(new StoryDetailsDto
-            {
-                Id = command.Id,
-                Author = command.Author,
-                Title = command.Title,
-                Text = command.Text,
-                Tags = command.Tags ?? Enumerable.Empty<string>(),
-                CreatedAt = DateTime.UtcNow
-            });
+            var author = new Author(command.Author);
+            var story = new Story(command.Id, command.Title, command.Text, author, command.Tags, DateTime.UtcNow);
+            await _storyRepository.AddAsync(story);
+            _logger.LogInformation($"Added a story with ID: '{story.Id}'.");
         }
     }
 }

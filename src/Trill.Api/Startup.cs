@@ -14,6 +14,7 @@ using Trill.Api.Services;
 using Trill.Application;
 using Trill.Application.Commands;
 using Trill.Application.Services;
+using Trill.Infrastructure;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trill.Api
@@ -42,6 +43,7 @@ namespace Trill.Api
                 Version = "v1"
             }));
             services.AddApplication();
+            services.AddInfrastructure();
 
             // services.AddHostedService<NotificationsService>();
         }

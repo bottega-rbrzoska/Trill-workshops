@@ -21,7 +21,9 @@ namespace Trill.Api.Controllers
             => Ok(await _storyService.BrowseAsync(author));
     
         [HttpGet("{storyId:guid}")]
-        public async Task<ActionResult<StoryDto>> Get(Guid storyId)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<StoryDetailsDto>> Get(Guid storyId)
         {
             var story = await _storyService.GetAsync(storyId);
             if (story is null)
