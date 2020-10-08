@@ -15,7 +15,6 @@ using Trill.Application;
 using Trill.Application.Commands;
 using Trill.Application.Services;
 using Trill.Infrastructure;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Trill.Api
 {

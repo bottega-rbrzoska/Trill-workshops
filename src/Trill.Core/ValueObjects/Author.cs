@@ -1,4 +1,5 @@
 using System;
+using Trill.Core.Exceptions;
 
 namespace Trill.Core.ValueObjects
 {
@@ -10,7 +11,7 @@ namespace Trill.Core.ValueObjects
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException(name);
+                throw new InvalidAuthorException(name);
             }
         
             Name = name;
