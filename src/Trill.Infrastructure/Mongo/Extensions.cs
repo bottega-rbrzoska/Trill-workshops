@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Trill.Core.Repositories;
 using Trill.Infrastructure.Mongo.Repositories;
@@ -32,6 +34,12 @@ namespace Trill.Infrastructure.Mongo
             });
 
             services.AddScoped<IStoryRepository, MongoStoryRepository>();
+
+            ConventionRegistry.Register("trill", new ConventionPack
+            {
+                new EnumRepresentationConvention(BsonType.String),
+                new CamelCaseElementNameConvention()
+            }, _ => true);
             
             return services;
         }
