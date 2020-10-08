@@ -1,5 +1,5 @@
 @url = http://localhost:5000
-@storyId = ccdbf64d-999c-49df-bdc0-0f973365f754
+@storyId = 9e73e1f8-bff1-4a37-9e09-5a4d64a1dd69
 
 ###
 GET {{url}}
