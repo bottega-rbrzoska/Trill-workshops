@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using Trill.Api;
@@ -16,7 +17,7 @@ namespace Trill.Tests.Integration.Controllers
             var response = await _client.GetAsync("api");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            content.ShouldBe("Trill API [dev]");
+            content.ShouldBe("Trill API [test]");
         }
         
         #region Arrange
@@ -25,7 +26,12 @@ namespace Trill.Tests.Integration.Controllers
 
         public HomeControllerTests(WebApplicationFactory<Startup> factory)
         {
-            _client = factory.CreateClient();
+            _client = factory
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.UseEnvironment("test");
+                })
+                .CreateClient();
         }
         
         #endregion
