@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TestRoutingModule } from './test-routing.module';
 import { MyTestsComponent } from './my-tests/my-tests.component';
 import { ChildTestComponent } from './child-test/child-test.component';
+import { TestService } from './test.service';
 
 export const testData = 'sdsdsdsd';
 
@@ -12,6 +13,7 @@ export const testData = 'sdsdsdsd';
   imports: [
     CommonModule,
     TestRoutingModule
-  ]
+  ],
+  providers: [TestService]
 })
 export class TestModule { }

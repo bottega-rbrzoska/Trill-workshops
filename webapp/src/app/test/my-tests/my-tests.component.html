@@ -2,3 +2,14 @@
 <div>
   <app-child-test [childData]="testData" (childButtonClick)="handleChildClick($event)"></app-child-test>
 </div>
+
+<div [ngClass]="{ green: isOnline, red: !isOnline }">
+Test
+</div>
+Toggle counts: {{counter}}
+<button (click)="toggleOnline()">Toggle</button>
+<span *ngIf="isOnline">I am online</span>
+
+<ul>
+  <li *ngFor="let elVar of testCol">{{ elVar.testName}}({{elVar.testAge}})</li>
+</ul>
