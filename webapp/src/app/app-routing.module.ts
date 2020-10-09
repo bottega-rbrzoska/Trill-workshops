@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'test', loadChildren: () => import('./test/test.module').then(m => m.TestModule)},
+  { path: 'stories', loadChildren: () => import('./stories/stories.module').then(m => m.StoriesModule)},
   { path: '**', component: PageNotFoundComponent }
 ];
 

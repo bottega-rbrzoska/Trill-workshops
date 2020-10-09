@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Story } from 'src/app/models/Story';
+import { StoriesService } from '../stories.service';
 
 @Component({
   selector: 'app-stories-list',
@@ -7,7 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StoriesListComponent implements OnInit {
 
-  constructor() { }
+  stories: Story[];
+  constructor(private storiesService: StoriesService) {
+    this.stories = this.storiesService.getStories();
+  }
 
   ngOnInit(): void {
   }
