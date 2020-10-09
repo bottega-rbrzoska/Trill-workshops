@@ -30,6 +30,7 @@ namespace Trill.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddScoped<IMessenger, Messenger>();
             services.Configure<ApiOptions>(_configuration.GetSection("api"));
             services.AddControllers().AddNewtonsoftJson();
@@ -39,6 +40,12 @@ namespace Trill.Api
                 Version = "v1"
             }));
             services.AddApplication();
+            services.AddCors(opt => opt.AddDefaultPolicy(builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        }));
             services.AddInfrastructure();
 
             // services.AddHostedService<NotificationsService>();
@@ -81,7 +88,7 @@ namespace Trill.Api
             });
             
             app.UseRouting();
-
+            app.UseCors();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

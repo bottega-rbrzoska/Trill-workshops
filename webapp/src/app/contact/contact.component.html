@@ -1,1 +1,8 @@
 <p>contact works!</p>
+<form [formGroup]="myContactForm" (submit)="handleSubmit()">
+  Name: <input formControlName="name">
+  email: <input formControlName="email">
+  <button>Save</button>
+</form>
+{{myContactForm.controls.name.errors | json}}
+{{myContactForm.controls.email.errors | json}}

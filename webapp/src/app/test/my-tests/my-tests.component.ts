@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject, observable, Observable, of, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { TestData } from '../../models/TestData';
 import { TestService } from '../test.service';
 
@@ -8,6 +10,19 @@ import { TestService } from '../test.service';
   styleUrls: ['./my-tests.component.scss']
 })
 export class MyTestsComponent implements OnInit {
+
+
+  // obs$ = new Observable(obs => {
+  //   obs.next(1);
+  //   obs.error('oooooh f****ck');
+  //   obs.next(2);
+  //   obs.next(3);
+  //   obs.complete();
+  // });
+  obs$ = of(1,2,3,4,5)
+
+  mySubj = new Subject();
+  myBSubj = new BehaviorSubject('a');
 
   counter;
   isOnline = false;
@@ -30,6 +45,12 @@ export class MyTestsComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.myBSubj.pipe(
+      tap(v => console.log(v)),
+      map(v => v.toUpperCase()))
+      .subscribe( value => console.log(value), err=> console.log(err), () => console.log('Completed'));
+
+    this.mySubj.next(1)
   }
 
   handleChildClick(name) {
