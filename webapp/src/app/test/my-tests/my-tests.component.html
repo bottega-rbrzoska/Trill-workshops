@@ -1,1 +1,4 @@
-<p>my-tests works!</p>
+<p class="red">my-tests works!</p>
+<div>
+  <app-child-test [childData]="testData" (childButtonClick)="handleChildClick($event)"></app-child-test>
+</div>

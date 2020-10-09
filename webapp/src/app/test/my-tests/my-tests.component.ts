@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { TestData } from '../../models/TestData';
 
 @Component({
   selector: 'app-my-tests',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MyTestsComponent implements OnInit {
 
+  testData: TestData = {
+    testAge: 18,
+    testName: 'MyName'
+  };
   constructor() { }
 
   ngOnInit(): void {
+  }
+  handleChildClick(name) {
+    console.log(name)
   }
 
 }
