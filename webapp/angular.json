@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "trill-webapp"
+    }
+  },
+  "defaultProject": "trill-webapp",
+  "cli": {
+    "analytics": false
+  }
 }
