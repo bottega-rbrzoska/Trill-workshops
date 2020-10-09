@@ -16,7 +16,7 @@ namespace Trill.Infrastructure
             services.AddScoped<IStoryRepository, InMemoryStoryRepository>();
             services.AddScoped<DummyMiddleware>();
             services.AddScoped<ErrorHandlerMiddleware>();
-            services.AddMongo();
+            //services.AddMongo();
             
             return services;
         }
