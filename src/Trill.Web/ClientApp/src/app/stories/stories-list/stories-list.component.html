@@ -1,0 +1,13 @@
+<h2>Stories</h2>
+<button class="btn btn-sm btn-danger" routerLink="/stories/add">Add new story</button>
+<table class="table">
+  <tr><th>Title</th><th>Author</th><th></th></tr>
+  <tr *ngFor="let story of stories$ | async">
+    <td>{{ story.title }}</td>
+    <td>{{ story.author }}</td>
+    <td><button class="btn btn-sm btn-primary" [routerLink]="['/stories', story.id]"> View Details</button></td>
+  </tr>
+
+</table>
+
+  <div>Stories counter {{ storiesCount$ | async}}</div>
